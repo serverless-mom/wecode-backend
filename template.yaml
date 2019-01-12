@@ -1,14 +1,53 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
 Resources:
-  functionA521E60D:
+  api65FB3E07:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub
+        - ${ResourceName} From Stack ${StackTagName} Environment ${EnvironmentTagName}
+        - ResourceName: api65FB3E07
+      StageName: !Ref EnvironmentAPIGatewayStageName
+      DefinitionBody:
+        swagger: '2.0'
+        info: {}
+        paths:
+          /:
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${function68630A77.Arn}/invocations
+              responses: {}
+          /new:
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${functionC59B3441.Arn}/invocations
+              responses: {}
+      EndpointConfiguration: REGIONAL
+  table9F1AF367:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      TableName: !Sub ${AWS::StackName}-table9F1AF367
+  function68630A77:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-functionA521E60D
+      FunctionName: !Sub ${AWS::StackName}-function68630A77
       Description: !Sub
         - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: allRecords
-      CodeUri: src/functionA521E60D
+        - ResourceName: newRecord
+      CodeUri: src/function68630A77
       Handler: index.handler
       Runtime: nodejs8.10
       MemorySize: 3008
@@ -30,54 +69,15 @@ Resources:
           TABLE_NAME: !Ref table9F1AF367
           TABLE_ARN: !GetAtt table9F1AF367.Arn
     Metadata:
-      StackeryName: allRecords
-  api65FB3E07:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: !Sub
-        - ${ResourceName} From Stack ${StackTagName} Environment ${EnvironmentTagName}
-        - ResourceName: api65FB3E07
-      StageName: !Ref EnvironmentAPIGatewayStageName
-      DefinitionBody:
-        swagger: '2.0'
-        info: {}
-        paths:
-          /:
-            get:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${functionA521E60D.Arn}/invocations
-              responses: {}
-          /new:
-            post:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${function8BE9892A.Arn}/invocations
-              responses: {}
-      EndpointConfiguration: REGIONAL
-  table9F1AF367:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      AttributeDefinitions:
-        - AttributeName: id
-          AttributeType: S
-      BillingMode: PAY_PER_REQUEST
-      KeySchema:
-        - AttributeName: id
-          KeyType: HASH
-      StreamSpecification:
-        StreamViewType: NEW_AND_OLD_IMAGES
-      TableName: !Sub ${AWS::StackName}-table9F1AF367
-  function8BE9892A:
+      StackeryName: newRecord
+  functionC59B3441:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-function8BE9892A
+      FunctionName: !Sub ${AWS::StackName}-functionC59B3441
       Description: !Sub
         - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: newRecord
-      CodeUri: src/function8BE9892A
+        - ResourceName: listAll
+      CodeUri: src/functionC59B3441
       Handler: index.handler
       Runtime: nodejs8.10
       MemorySize: 3008
@@ -99,7 +99,7 @@ Resources:
           TABLE_NAME: !Ref table9F1AF367
           TABLE_ARN: !GetAtt table9F1AF367.Arn
     Metadata:
-      StackeryName: newRecord
+      StackeryName: listAll
 Parameters:
   StackTagName:
     Type: String
