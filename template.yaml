@@ -12,13 +12,6 @@ Resources:
         swagger: '2.0'
         info: {}
         paths:
-          /:
-            get:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${function68630A77.Arn}/invocations
-              responses: {}
           /new:
             post:
               x-amazon-apigateway-integration:
@@ -40,36 +33,6 @@ Resources:
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
       TableName: !Sub ${AWS::StackName}-table9F1AF367
-  function68630A77:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-function68630A77
-      Description: !Sub
-        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: newRecord
-      CodeUri: src/function68630A77
-      Handler: index.handler
-      Runtime: nodejs8.10
-      MemorySize: 3008
-      Timeout: 30
-      Tracing: Active
-      Policies:
-        - AWSXrayWriteOnlyAccess
-        - DynamoDBCrudPolicy:
-            TableName: !Ref table9F1AF367
-      Events:
-        api65FB3E07GET:
-          Type: Api
-          Properties:
-            Path: /
-            Method: GET
-            RestApiId: !Ref api65FB3E07
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref table9F1AF367
-          TABLE_ARN: !GetAtt table9F1AF367.Arn
-    Metadata:
-      StackeryName: newRecord
   functionC59B3441:
     Type: AWS::Serverless::Function
     Properties:
