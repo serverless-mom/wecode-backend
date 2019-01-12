@@ -7,7 +7,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-functionA521E60D
       Description: !Sub
         - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: functionA521E60D
+        - ResourceName: allRecords
       CodeUri: src/functionA521E60D
       Handler: index.handler
       Runtime: nodejs8.10
@@ -29,6 +29,8 @@ Resources:
         Variables:
           TABLE_NAME: !Ref table9F1AF367
           TABLE_ARN: !GetAtt table9F1AF367.Arn
+    Metadata:
+      StackeryName: allRecords
   api65FB3E07:
     Type: AWS::Serverless::Api
     Properties:
@@ -74,7 +76,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-function8BE9892A
       Description: !Sub
         - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: function8BE9892A
+        - ResourceName: newRecord
       CodeUri: src/function8BE9892A
       Handler: index.handler
       Runtime: nodejs8.10
@@ -96,6 +98,8 @@ Resources:
         Variables:
           TABLE_NAME: !Ref table9F1AF367
           TABLE_ARN: !GetAtt table9F1AF367.Arn
+    Metadata:
+      StackeryName: newRecord
 Parameters:
   StackTagName:
     Type: String
